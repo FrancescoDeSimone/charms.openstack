@@ -51,6 +51,26 @@ class TestCustomProperties(unittest.TestCase):
             self.assertTrue(adapters._custom_config_properties['test_func'],
                             test_func)
 
+    def test_user_config_flags(self):
+        cfg = {
+            'one': 1,
+            'two': 2,
+            'config-flags': "a = b,c=d, e= f",
+            'tree': 3
+        }
+        with mock.patch.object(adapters,
+                               '_custom_config_properties',
+                               new=cfg):
+
+            @adapters.config_property_with_config_flags
+            def test_func():
+                pass
+
+            self.assertEqual(adapters._custom_config_properties['one'], 1)
+            self.assertEqual(adapters._custom_config_properties['a'], 'b')
+            self.assertEqual(adapters._custom_config_properties['c'], 'd')
+            self.assertEqual(adapters._custom_config_properties['e'], 'f')
+
 
 class MyRelation(object):
 

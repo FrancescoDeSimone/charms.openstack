@@ -84,6 +84,23 @@ def config_property(f):
     _custom_config_properties[property_name] = f
     return f
 
+
+def config_property_with_config_flags(f):
+    property_name = f.__name__
+    user_flags = dict(map(lambda x: [s.strip() for s in x.split('=')],
+                          _custom_config_properties['config-flags']
+                          .split(',')))
+
+    _custom_config_properties.pop('config-flags')
+    _custom_config_properties.update(user_flags)
+    if property_name in _custom_config_properties:
+        raise RuntimeError(
+            "Property name '{}' used more than once for configuration?"
+            .format(property_name))
+    _custom_config_properties[property_name] = f
+    return f
+
+
 ##
 
 
